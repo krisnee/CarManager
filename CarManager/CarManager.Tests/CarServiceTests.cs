@@ -1,12 +1,11 @@
-using Xunit;
-using Car.Application.Services;
-using Car.Infrastructure.Data;
+using CarManager.ApplicationServices.Services;
+using CarManager.Core.Dtos;
+using CarManager.Data;
 using Microsoft.EntityFrameworkCore;
-using Car.Core.Entities;
 using System.Threading.Tasks;
-using System.Linq;
+using Xunit;
 
-namespace Car.Tests
+namespace CarManager.Tests
 {
     public class CarServiceTests
     {
@@ -19,45 +18,76 @@ namespace Car.Tests
             return new CarService(context);
         }
 
+        private CarDto GetTestCarDto()
+        {
+            return new CarDto
+            {
+                Brand = "Test",
+                Model = "Model",
+                Year = 2020,
+                Color = "Red",
+                Price = 10000
+            };
+        }
+
         [Fact]
-        public async Task CreateAsync_AddsCar()
+        public async Task Create_AddsCar()
         {
             var service = GetService();
-            var car = new CarEntity { Make = "Test", Model = "Model", Year = 2020, Color = "Red", Price = 10000 };
-            await service.CreateAsync(car);
+            var carDto = GetTestCarDto();
+
+            await service.Create(carDto);
             var cars = await service.GetAllAsync();
+
             Assert.Single(cars);
         }
 
         [Fact]
-        public async Task GetByIdAsync_ReturnsCar()
+        public async Task DetailAsync_ReturnsCar()
         {
             var service = GetService();
-            var car = new CarEntity { Make = "Test", Model = "Model", Year = 2020, Color = "Red", Price = 10000 };
-            await service.CreateAsync(car);
-            var fetchedCar = await service.GetByIdAsync(car.Id);
+            var carDto = GetTestCarDto();
+
+            var createdCar = await service.Create(carDto);
+            var fetchedCar = await service.DetailAsync(createdCar.Id);
+
             Assert.NotNull(fetchedCar);
+            Assert.Equal("Test", fetchedCar.Brand);
         }
 
         [Fact]
-        public async Task UpdateAsync_UpdatesCar()
+        public async Task Update_UpdatesCar()
         {
             var service = GetService();
-            var car = new CarEntity { Make = "Test", Model = "Model", Year = 2020, Color = "Red", Price = 10000 };
-            await service.CreateAsync(car);
-            car.Color = "Blue";
-            await service.UpdateAsync(car);
-            var updatedCar = await service.GetByIdAsync(car.Id);
+            var carDto = GetTestCarDto();
+
+            var createdCar = await service.Create(carDto);
+            var updatedDto = new CarDto
+            {
+                Id = createdCar.Id,
+                Brand = "Test",
+                Model = "Model",
+                Year = 2020,
+                Color = "Blue", // <-- muudame värvi
+                Price = 10000,
+                CreatedAt = createdCar.CreatedAt
+            };
+
+            await service.Update(updatedDto);
+            var updatedCar = await service.DetailAsync(createdCar.Id);
+
             Assert.Equal("Blue", updatedCar.Color);
         }
 
         [Fact]
-        public async Task DeleteAsync_RemovesCar()
+        public async Task Delete_RemovesCar()
         {
             var service = GetService();
-            var car = new CarEntity { Make = "Test", Model = "Model", Year = 2020, Color = "Red", Price = 10000 };
-            await service.CreateAsync(car);
-            await service.DeleteAsync(car.Id);
+            var carDto = GetTestCarDto();
+
+            var createdCar = await service.Create(carDto);
+            await service.Delete(createdCar.Id);
+
             var cars = await service.GetAllAsync();
             Assert.Empty(cars);
         }

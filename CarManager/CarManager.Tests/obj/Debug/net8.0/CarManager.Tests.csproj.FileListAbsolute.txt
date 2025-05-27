@@ -1,0 +1,8 @@
+C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Tests\bin\Debug\net8.0\.msCoverageSourceRootsMapping_CarManager.Tests
+C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Tests\bin\Debug\net8.0\CoverletSourceRootsMapping_CarManager.Tests
+C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Tests\obj\Debug\net8.0\CarManager.Tests.csproj.AssemblyReference.cache
+C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Tests\obj\Debug\net8.0\CarManager.Tests.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Tests\obj\Debug\net8.0\CarManager.Tests.AssemblyInfoInputs.cache
+C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Tests\obj\Debug\net8.0\CarManager.Tests.AssemblyInfo.cs
+C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Tests\obj\Debug\net8.0\CarManager.Tests.csproj.CoreCompileInputs.cache
+C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Tests\obj\Debug\net8.0\CarManager.Tests.sourcelink.json
