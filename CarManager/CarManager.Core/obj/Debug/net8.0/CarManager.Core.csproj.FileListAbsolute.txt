@@ -1,10 +1,12 @@
 C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Core\bin\Debug\net8.0\CarManager.Core.deps.json
 C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Core\bin\Debug\net8.0\CarManager.Core.dll
 C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Core\bin\Debug\net8.0\CarManager.Core.pdb
+C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Core\obj\Debug\net8.0\CarManager.Core.csproj.AssemblyReference.cache
 C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Core\obj\Debug\net8.0\CarManager.Core.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Core\obj\Debug\net8.0\CarManager.Core.AssemblyInfoInputs.cache
 C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Core\obj\Debug\net8.0\CarManager.Core.AssemblyInfo.cs
 C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Core\obj\Debug\net8.0\CarManager.Core.csproj.CoreCompileInputs.cache
+C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Core\obj\Debug\net8.0\CarManager.Core.sourcelink.json
 C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Core\obj\Debug\net8.0\CarManager.Core.dll
 C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Core\obj\Debug\net8.0\refint\CarManager.Core.dll
 C:\Users\krist\Documents\KOOL\CarManager\CarManager\CarManager.Core\obj\Debug\net8.0\CarManager.Core.pdb
