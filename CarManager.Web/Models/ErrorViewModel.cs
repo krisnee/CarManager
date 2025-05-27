@@ -1,4 +1,4 @@
-namespace CarManager.Web.Models
+namespace CarManager.Models
 {
     public class ErrorViewModel
     {

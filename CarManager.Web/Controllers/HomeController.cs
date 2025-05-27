@@ -1,8 +1,8 @@
-using CarManager.Web.Models;
-using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using CarManager.Models;
+using Microsoft.AspNetCore.Mvc;
 
-namespace CarManager.Web.Controllers
+namespace CarManager.Controllers
 {
     public class HomeController : Controller
     {

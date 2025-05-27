@@ -1,3 +1,9 @@
+using CarManager.ApplicationServices.Services;
+using CarManager.Core.ServiceInterfaces;      
+using CarManager.Data;
+using Microsoft.EntityFrameworkCore;
+
+
 namespace CarManager.Web
 {
     public class Program
@@ -6,8 +12,12 @@ namespace CarManager.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            
+           // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<ICarService, CarService>();
+            builder.Services.AddDbContext<CarDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
 
@@ -29,6 +39,7 @@ namespace CarManager.Web
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
             app.Run();
         }
