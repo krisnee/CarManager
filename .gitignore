@@ -1,0 +1,19 @@
+## Visual Studio temp files
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.log
+
+## Entity Framework
+*.db
+*.db-shm
+*.db-wal
+
+## Other temp files
+Thumbs.db
+.DS_Store
+*.tmp
+*.temp
