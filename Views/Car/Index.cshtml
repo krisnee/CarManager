@@ -1,0 +1,75 @@
+@model IEnumerable<Car>
+
+@{
+    ViewData["Title"] = "Autod";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Autod</h1>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="fas fa-plus"></i> Lisa uus auto
+    </a>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <input type="text" id="searchInput" class="form-control" placeholder="Otsi autosid..." onkeyup="filterCars()">
+    </div>
+</div>
+
+<div class="row" id="carsContainer">
+    @foreach (var car in Model)
+    {
+        <div class="col-md-4 mb-4 car-card" data-brand="@car.Brand.ToLower()" data-model="@car.Model.ToLower()">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@car.Brand @car.Model</h5>
+                    <p class="card-text">
+                        <strong>Aasta:</strong> @car.Year<br>
+                        <strong>Värv:</strong> @car.Color<br>
+                        <strong>Hind:</strong> @car.Price.ToString("C", new System.Globalization.CultureInfo("et-EE"))
+                    </p>
+                    <small class="text-muted">
+                        Lisatud: @car.CreatedAt.ToString("dd.MM.yyyy")
+                    </small>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="btn-group w-100" role="group">
+                        <a asp-action="Details" asp-route-id="@car.Id" class="btn btn-outline-primary btn-sm">Vaata</a>
+                        <a asp-action="Edit" asp-route-id="@car.Id" class="btn btn-outline-warning btn-sm">Muuda</a>
+                        <a asp-action="Delete" asp-route-id="@car.Id" class="btn btn-outline-danger btn-sm">Kustuta</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <div class="text-center mt-5">
+        <h3>Autosid ei leitud</h3>
+        <p class="text-muted">Alustamiseks lisage esimene auto.</p>
+        <a asp-action="Create" class="btn btn-primary">Lisa auto</a>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        function filterCars() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.car-card');
+            
+            cards.forEach(card => {
+                const brand = card.dataset.brand;
+                const model = card.dataset.model;
+                
+                if (brand.includes(searchTerm) || model.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+}
