@@ -24,7 +24,11 @@ namespace CarManager.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CarDto car)
         {
-            if (!ModelState.IsValid) return View(car);
+            if (!ModelState.IsValid)
+            {
+                return View(car);  // Näitab vigu
+            }
+
             await _carService.CreateAsync(car);
             return RedirectToAction(nameof(Index));
         }
