@@ -1,33 +1,226 @@
 ﻿@model IEnumerable<CarManager.Core.Dtos.CarDto>
 
-<h2>All Cars</h2>
-<a class="btn btn-primary" asp-action="Create">Add New</a>
+@{
+    ViewData["Title"] = "Cars";
+}
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Make</th>
-            <th>Model</th>
-            <th>Year</th>
-            <th>Color</th>
-            <th>Price</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>All Cars</h1>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="fas fa-plus"></i> Add New Car
+    </a>
+</div>
+
+<!-- Search and Filter Section -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" id="searchInput" class="form-control" placeholder="Search cars..." onkeyup="filterCars()">
+        </div>
+    </div>
+    <div class="col-md-3">
+        <select id="yearFilter" class="form-select" onchange="filterCars()">
+            <option value="">All Years</option>
+            @{
+                var years = Model.Select(c => c.Year).Distinct().OrderByDescending(y => y);
+            }
+            @foreach (var year in years)
+            {
+                <option value="@year">@year</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">Clear Filters</button>
+    </div>
+</div>
+
+@if (Model.Any())
+{
+    <!-- Cards View -->
+    <div class="row" id="carsContainer">
         @foreach (var car in Model)
         {
-            <tr>
-                <td>@car.Brand</td>
-                <td>@car.Model</td>
-                <td>@car.Year</td>
-                <td>@car.Color</td>
-                <td>@car.Price</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@car.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@car.Id">Delete</a>
-                </td>
-            </tr>
+            <div class="col-lg-4 col-md-6 mb-4 car-card"
+                 data-brand="@car.Brand.ToLower()"
+                 data-model="@car.Model.ToLower()"
+                 data-year="@car.Year"
+                 data-color="@car.Color.ToLower()">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">@car.Brand @car.Model</h5>
+                        <div class="row">
+                            <div class="col-6">
+                                <p class="card-text mb-1">
+                                    <strong>Year:</strong> @car.Year
+                                </p>
+                                <p class="card-text mb-1">
+                                    <strong>Color:</strong> @car.Color
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <p class="card-text mb-1">
+                                    <strong>Price:</strong>
+                                    <span class="text-success fw-bold">€@car.Price</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="btn-group w-100" role="group">
+                            <a asp-action="Details" asp-route-id="@car.Id" class="btn btn-outline-info btn-sm">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@car.Id" class="btn btn-outline-warning btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@car.Id" class="btn btn-outline-danger btn-sm"
+                               onclick="return confirm('Are you sure you want to delete this car?')">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+
+    <!-- Table View Toggle -->
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-outline-secondary btn-sm" onclick="toggleView()">
+            <i class="fas fa-table"></i> Switch to Table View
+        </button>
+    </div>
+
+    <!-- Table View (Hidden by default) -->
+    <div id="tableView" style="display: none;">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Make</th>
+                        <th>Model</th>
+                        <th>Year</th>
+                        <th>Color</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    @foreach (var car in Model)
+                    {
+                        <tr class="table-row"
+                            data-brand="@car.Brand.ToLower()"
+                            data-model="@car.Model.ToLower()"
+                            data-year="@car.Year"
+                            data-color="@car.Color.ToLower()">
+                            <td>@car.Brand</td>
+                            <td>@car.Model</td>
+                            <td>@car.Year</td>
+                            <td>@car.Color</td>
+                            <td class="text-success fw-bold">€@car.Price</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Details" asp-route-id="@car.Id" class="btn btn-outline-info btn-sm">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@car.Id" class="btn btn-outline-warning btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@car.Id" class="btn btn-outline-danger btn-sm"
+                                       onclick="return confirm('Are you sure you want to delete this car?')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="text-center mt-5">
+        <div class="mb-4">
+            <i class="fas fa-car fa-5x text-muted"></i>
+        </div>
+        <h3>No cars found</h3>
+        <p class="text-muted">Add your first car to get started.</p>
+        <a asp-action="Create" class="btn btn-primary btn-lg">
+            <i class="fas fa-plus"></i> Add Your First Car
+        </a>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        let isTableView = false;
+
+        function filterCars() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const yearFilter = document.getElementById('yearFilter').value;
+
+            if (isTableView) {
+                const rows = document.querySelectorAll('.table-row');
+                rows.forEach(row => {
+                    const brand = row.dataset.brand;
+                    const model = row.dataset.model;
+                    const year = row.dataset.year;
+                    const color = row.dataset.color;
+
+                    const matchesSearch = brand.includes(searchTerm) ||
+                                        model.includes(searchTerm) ||
+                                        color.includes(searchTerm);
+                    const matchesYear = !yearFilter || year === yearFilter;
+
+                    row.style.display = (matchesSearch && matchesYear) ? '' : 'none';
+                });
+            } else {
+                const cards = document.querySelectorAll('.car-card');
+                cards.forEach(card => {
+                    const brand = card.dataset.brand;
+                    const model = card.dataset.model;
+                    const year = card.dataset.year;
+                    const color = card.dataset.color;
+
+                    const matchesSearch = brand.includes(searchTerm) ||
+                                        model.includes(searchTerm) ||
+                                        color.includes(searchTerm);
+                    const matchesYear = !yearFilter || year === yearFilter;
+
+                    card.style.display = (matchesSearch && matchesYear) ? 'block' : 'none';
+                });
+            }
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('yearFilter').value = '';
+            filterCars();
+        }
+
+        function toggleView() {
+            const cardsContainer = document.getElementById('carsContainer');
+            const tableView = document.getElementById('tableView');
+            const toggleButton = document.querySelector('[onclick="toggleView()"]');
+
+            if (isTableView) {
+                cardsContainer.style.display = 'flex';
+                tableView.style.display = 'none';
+                toggleButton.innerHTML = '<i class="fas fa-table"></i> Switch to Table View';
+                isTableView = false;
+            } else {
+                cardsContainer.style.display = 'none';
+                tableView.style.display = 'block';
+                toggleButton.innerHTML = '<i class="fas fa-th"></i> Switch to Card View';
+                isTableView = true;
+            }
+
+            // Re-apply filters after view change
+            filterCars();
+        }
+    </script>
+}
