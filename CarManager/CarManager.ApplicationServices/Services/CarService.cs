@@ -6,83 +6,80 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CarManager.ApplicationServices.Services
 {
-    public class CarService(CarDbContext context) : ICarService
+    public class CarService : ICarService
     {
-        private readonly CarDbContext _context = context;
+        private readonly CarDbContext _context;
 
-        // Muutke DetailAsync → GetByIdAsync
-        public async Task<Car> GetByIdAsync(Guid id)
+        public CarService(CarDbContext context)
         {
-            var result = await _context.Cars
-                .FirstOrDefaultAsync(x => x.Id == id);
-            return result!;
-        }
-
-        // Muutke Create → CreateAsync
-        public async Task<Car> CreateAsync(CarDto dto)
-        {
-            var car = new Car
-            {
-                Id = Guid.NewGuid(),
-                Brand = dto.Brand ?? "",
-                Model = dto.Model ?? "",
-                Year = dto.Year ?? 0,
-                Color = dto.Color ?? "",
-                Price = dto.Price ?? 0,
-                CreatedAt = DateTime.UtcNow,
-                ModifiedAt = DateTime.UtcNow
-            };
-            await _context.Cars.AddAsync(car);
-            await _context.SaveChangesAsync();
-            return car;
-        }
-
-        // Muutke Update → UpdateAsync
-        public async Task<Car> UpdateAsync(CarDto dto)
-        {
-            var domain = new Car
-            {
-                Id = dto.Id ?? Guid.NewGuid(),
-                Brand = dto.Brand ?? "",
-                Model = dto.Model ?? "",
-                Year = dto.Year ?? 0,
-                Color = dto.Color ?? "",
-                Price = dto.Price ?? 0,
-                CreatedAt = dto.CreatedAt ?? DateTime.UtcNow,
-                ModifiedAt = DateTime.UtcNow
-            };
-            _context.Cars.Update(domain);
-            await _context.SaveChangesAsync();
-            return domain;
-        }
-
-        // Muutke Delete → DeleteAsync
-        public async Task<Car> DeleteAsync(Guid id)
-        {
-            var car = await _context.Cars
-                .FirstOrDefaultAsync(x => x.Id == id);
-            if (car == null)
-                throw new Exception("Car not found");
-            _context.Cars.Remove(car);
-            await _context.SaveChangesAsync();
-            return car;
+            _context = context;
         }
 
         public async Task<IEnumerable<CarDto>> GetAllAsync()
         {
-            return await _context.Cars
-                .Select(car => new CarDto
-                {
-                    Id = car.Id,
-                    Brand = car.Brand,
-                    Model = car.Model,
-                    Year = car.Year,
-                    Color = car.Color,
-                    Price = car.Price,
-                    CreatedAt = car.CreatedAt,
-                    ModifiedAt = car.ModifiedAt
-                })
-                .ToListAsync();
+            var cars = await _context.Cars.ToListAsync();
+            return cars.Select(car => new CarDto
+            {
+                Id = car.Id,
+                Brand = car.Brand,
+                Model = car.Model,
+                Year = car.Year,
+                Color = car.Color,
+                Price = car.Price,
+                CreatedAt = car.CreatedAt,
+                ModifiedAt = car.ModifiedAt
+            });
+        }
+
+        public async Task<Car> GetByIdAsync(Guid id)
+        {
+            return await _context.Cars.FindAsync(id);
+        }
+
+        public async Task<Car> CreateAsync(CarDto dto)
+        {
+            var car = new Car
+            {
+                Brand = dto.Brand,
+                Model = dto.Model,
+                Year = dto.Year ?? 0,
+                Color = dto.Color,
+                Price = dto.Price ?? 0,
+                CreatedAt = DateTime.UtcNow,
+                ModifiedAt = DateTime.UtcNow
+            };
+
+            _context.Cars.Add(car);
+            await _context.SaveChangesAsync();
+            return car;
+        }
+
+        public async Task<Car> UpdateAsync(CarDto dto)
+        {
+            var car = await _context.Cars.FindAsync(dto.Id);
+            if (car != null)
+            {
+                car.Brand = dto.Brand;
+                car.Model = dto.Model;
+                car.Year = dto.Year ?? car.Year;
+                car.Color = dto.Color;
+                car.Price = dto.Price ?? car.Price;
+                car.ModifiedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+            }
+            return car;
+        }
+
+        public async Task<Car> DeleteAsync(Guid id)
+        {
+            var car = await _context.Cars.FindAsync(id);
+            if (car != null)
+            {
+                _context.Cars.Remove(car);
+                await _context.SaveChangesAsync();
+            }
+            return car;
         }
     }
 }
