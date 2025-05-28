@@ -29,6 +29,28 @@ namespace CarManager.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)
+        {
+            var car = await _carService.GetByIdAsync(id);
+            if (car == null) return NotFound();
+
+            var dto = new CarDto
+            {
+                Id = car.Id,
+                Brand = car.Brand,
+                Model = car.Model,
+                Year = car.Year,
+                Color = car.Color,
+                Price = car.Price,
+                CreatedAt = car.CreatedAt,
+                ModifiedAt = car.ModifiedAt
+            };
+
+            return View(dto);
+        }
+
+
         public async Task<IActionResult> Edit(Guid id)
         {
             var car = await _carService.GetByIdAsync(id);
